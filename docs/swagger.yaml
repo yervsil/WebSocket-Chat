@@ -1,0 +1,142 @@
+basePath: /
+definitions:
+  domain.RefreshTokenRequest:
+    properties:
+      refreshToken:
+        type: string
+    required:
+    - refreshToken
+    type: object
+  domain.SigninRequest:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    required:
+    - email
+    - password
+    type: object
+  domain.SignupRequest:
+    properties:
+      email:
+        type: string
+      name:
+        type: string
+      password:
+        type: string
+    required:
+    - email
+    - name
+    - password
+    type: object
+  github_com_yervsil_auth_service_internal_utils.Response:
+    properties:
+      message: {}
+    type: object
+host: localhost:8000
+info:
+  contact: {}
+  description: Your API description
+  title: Auth service API
+  version: "1.0"
+paths:
+  /auth/refresh_token:
+    post:
+      consumes:
+      - application/json
+      description: updates request tokens by refresh token
+      parameters:
+      - description: Request to update token
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/domain.RefreshTokenRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: New token
+          schema:
+            $ref: '#/definitions/github_com_yervsil_auth_service_internal_utils.Response'
+        "400":
+          description: Invalid request data
+          schema:
+            $ref: '#/definitions/github_com_yervsil_auth_service_internal_utils.Response'
+        "500":
+          description: Server error
+          schema:
+            $ref: '#/definitions/github_com_yervsil_auth_service_internal_utils.Response'
+      summary: Token update
+      tags:
+      - Authentication
+  /auth/sign-in:
+    post:
+      consumes:
+      - application/json
+      description: Authentication of users by email and password, with token returning.
+      parameters:
+      - description: request for login from user
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/domain.SigninRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Access and refresh tokens
+          schema:
+            $ref: '#/definitions/github_com_yervsil_auth_service_internal_utils.Response'
+        "400":
+          description: Invaild request data
+          schema:
+            $ref: '#/definitions/github_com_yervsil_auth_service_internal_utils.Response'
+        "500":
+          description: Server error
+          schema:
+            $ref: '#/definitions/github_com_yervsil_auth_service_internal_utils.Response'
+      summary: Authentication
+      tags:
+      - Authentication
+  /sign-up:
+    post:
+      consumes:
+      - application/json
+      description: User creatiom
+      parameters:
+      - description: User data
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/domain.SignupRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/github_com_yervsil_auth_service_internal_utils.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/github_com_yervsil_auth_service_internal_utils.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/github_com_yervsil_auth_service_internal_utils.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/github_com_yervsil_auth_service_internal_utils.Response'
+        default:
+          description: ""
+          schema:
+            $ref: '#/definitions/github_com_yervsil_auth_service_internal_utils.Response'
+      summary: Create user
+      tags:
+      - User-creation
+swagger: "2.0"
