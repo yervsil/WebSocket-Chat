@@ -11,10 +11,10 @@ import (
 )
 
 type Config struct {
-	Env 	string `yaml:"env" env-default:"local"`
-	HttpServer `yaml:"httpServer"`
-	Postgres			`yaml:"postgres"`
-	Kafka		`yaml:"kafka"`
+	Env 	   string `yaml:"env" env-default:"local"`
+	HttpServer 		  `yaml:"httpServer"`
+	Postgres	      `yaml:"postgres"`
+	Kafka			  `yaml:"kafka"`
 }
 
 type Postgres struct {
@@ -27,13 +27,13 @@ type Postgres struct {
 }
 
 type HttpServer struct {
-	Port        string `yaml:"port" env-default:":80"`
-	ReadTimeout time.Duration `yaml:"readTimeout"`
+	Port         string        `yaml:"port" env-default:":80"`
+	ReadTimeout  time.Duration `yaml:"readTimeout"`
 	WriteTimeout time.Duration `yaml:"writeTimeout"`
 }
 
 type Kafka struct {
-	Brokers        string `yaml:"brokers"`
+	Brokers     string `yaml:"brokers"`
 	Topic 		string `yaml:"topic"`
 }
 
