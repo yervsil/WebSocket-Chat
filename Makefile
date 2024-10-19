@@ -1,6 +1,6 @@
 .PHONY: run
 run:
-	go run cmd/auth/main.go
+	go run cmd/main.go
 
 .PHONY: test_db
 test_db:
@@ -21,3 +21,7 @@ migrate_down:
 .PHONY: swag
 swag:
 	swag init --parseDependency --parseInternal -g cmd/auth/main.go
+
+.PHONY: mockGen
+mockGen:
+	mockgen -source="./handler.go" -destination="./mocks/mock_service.go" -package=mocks

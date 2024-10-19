@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"log/slog"
+	"time"
 
 	"github.com/lib/pq"
 	"github.com/yervsil/auth_service/domain"
@@ -20,7 +21,10 @@ type Repository interface {
 
 type Service struct {
 	repo Repository
-	log  *slog.Logger
+	log  		*slog.Logger
+	access_ttl	time.Duration
+	refresh_ttl	time.Duration
+	signingKey 	string
 }
 
 func New(repo Repository, log  *slog.Logger) *Service {

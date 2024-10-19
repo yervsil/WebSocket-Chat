@@ -8,7 +8,6 @@ import (
 )
 
 type Client struct {
-	log      *slog.Logger
 	conn     *websocket.Conn
 	user 	 *domain.User
 	roomName  string 
@@ -21,7 +20,11 @@ type Message struct {
 	RoomName    string  `json:"roomName"`
 }
 
+func NewMessage(username string, userid int, message string, roomName string) Message {
+	return Message{UserName: username, UserId: userid, Message: message, RoomName: roomName}
+}
+
 func NewClient(log *slog.Logger, conn *websocket.Conn,
 	user *domain.User, roomName  string) *Client {
-	return &Client{log: log, conn: conn, user: user, roomName: roomName}
+	return &Client{conn: conn, user: user, roomName: roomName}
 }

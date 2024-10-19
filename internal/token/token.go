@@ -16,39 +16,33 @@ type TokenPair struct {
 	AccessToken string    `json:"accessToken"`
 }
 
-func Token(user *domain.User) (*TokenPair, error) {
-	at := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"uuid": user.Id,
+func generateToken(user *domain.User, duration time.Duration) (string, error) {
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
+		"uuid":  user.Id,
 		"email": user.Email,
-        "name": user.Name,
-		"exp":	time.Now().Add(3 * time.Hour).Unix(),
+		"name":  user.Name,
+		"exp":   time.Now().Add(duration).Unix(),
 	})
 
-    accessToken, err := at.SignedString(jwtKey)
-    if err != nil {
-        return nil, err
-    }
-    fmt.Println(user)
-	rt := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-	    "uuid": user.Id,
-		"email":  user.Email,
-        "name": user.Name,
-		"exp":	time.Now().Add(72 * time.Hour).Unix(),
-	})
-
-    refreshToken, err := rt.SignedString(jwtKey)
-    if err != nil {
-        return nil, err
-    }
-
-	var tp TokenPair
-
-	tp.AccessToken = accessToken
-	tp.RefreshToken = refreshToken
-
-	return &tp, nil
+	return token.SignedString(jwtKey)
 }
 
+func Token(user *domain.User) (*TokenPair, error) {
+	accessToken, err := generateToken(user, 3*time.Hour)
+	if err != nil {
+		return nil, err
+	}
+
+	refreshToken, err := generateToken(user, 72*time.Hour)
+	if err != nil {
+		return nil, err
+	}
+
+	return &TokenPair{
+		AccessToken:  accessToken,
+		RefreshToken: refreshToken,
+	}, nil
+}
 
 func ParseToken(refreshToken string) (*domain.User, error) {
     token, err := jwt.Parse(refreshToken, func(token *jwt.Token) (interface{}, error) {
@@ -66,7 +60,7 @@ func ParseToken(refreshToken string) (*domain.User, error) {
     if !ok || !token.Valid {
         return nil, errors.New("token is invalid")
     }
-    fmt.Println(claims)
+    
     return &domain.User{Id: int(claims["uuid"].(float64)), 
                         Email: claims["email"].(string), 
                         Name: claims["name"].(string)}, nil

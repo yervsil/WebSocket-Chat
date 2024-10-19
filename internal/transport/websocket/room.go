@@ -3,17 +3,16 @@ package websocket
 import (
 	"context"
 	"fmt"
-	"log/slog"
 	"sync"
 	"time"
 
 	"github.com/google/uuid"
+	"log/slog"
 	"github.com/yervsil/auth_service/domain"
 	mdw "github.com/yervsil/auth_service/internal/transport/http"
 )
 
 type Room struct {
-	log 			*slog.Logger
 	Name    		string
 	Mu 		        sync.RWMutex
 	closed  		bool 
@@ -22,9 +21,8 @@ type Room struct {
 	producer 		mdw.Producer
 }
 
-func NewRoom(log *slog.Logger, roomName string, producer mdw.Producer) *Room {
+func NewRoom(roomName string, producer mdw.Producer) *Room {
 	return &Room{
-				log: log,
 				Name: roomName,
 				messageStack: make(chan Message),
 				users: make(map[int]*Client),
@@ -82,14 +80,15 @@ func (r *Room) sendMessageToOthers(msg Message) {
 	kafkaMessages := make([]domain.KafkaLoggingMessage, 0, len(r.users))
 
 	for _, u := range r.users {
-			if u.user.Id != msg.UserId {
-				err := u.conn.WriteMessage(1, []byte(fmt.Sprintf("%s: %s", msg.UserName, msg.Message)))
-				if err != nil {
-					r.log.Warn("can't send message to %s: %v", u.user.Name, err)
-				} else {
-					kafkaMessages = append(kafkaMessages, newKafkaLoggingMessage(msg, u.user.Id))
-				}
-		}
+		if u.user.Id != msg.UserId {
+			err := u.conn.WriteMessage(1, []byte(fmt.Sprintf("%s: %s", msg.UserName, msg.Message)))
+			if err != nil {
+				slog.Error(fmt.Sprintf("can't send messages to kafka: %s", err.Error()))
+				
+			} else {
+				kafkaMessages = append(kafkaMessages, newKafkaLoggingMessage(msg, u.user.Id))
+			}
+	}
 		}
 
 	go func() {
@@ -98,9 +97,9 @@ func (r *Room) sendMessageToOthers(msg Message) {
 
 		err := r.producer.ProduceJSONMessage(ctx, kafkaMessages)
 		if err != nil {
-			r.log.Error(fmt.Sprintf("can't send messages to kafka: %s", err.Error()))
+			slog.Error(fmt.Sprintf("can't send messages to kafka: %s", err.Error()))
 		}
-		r.log.Info(fmt.Sprintf("message %s has been produced", msg.Message))
+		slog.Info(fmt.Sprintf("message %s has been produced", msg.Message))
 	}()
 }
 

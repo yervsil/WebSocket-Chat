@@ -60,7 +60,7 @@ func (h *Handler) Chat() func(http.ResponseWriter, *http.Request) {
 
 		defer h.disconnectUser(client, room)
 						
-		message := Message{UserName: userData.Name, UserId:userData.Id, Message: fmt.Sprintf("user %s has joined ", userData.Name), RoomName: room.Name}
+		message := NewMessage(userData.Name, userData.Id, fmt.Sprintf("user %s has joined ",  userData.Name), room.Name) 
 
 		room.PushMessage(message)
 
@@ -83,7 +83,7 @@ func(h *Handler) addUserToRoom(client *Client) (*Room, error) {
 
 func(h *Handler) getOrCreateRoom(roomName string) *Room {
 	if _, ok := h.rooms[roomName]; !ok {
-		h.rooms[roomName] = NewRoom(h.log, roomName, h.producer)
+		h.rooms[roomName] = NewRoom(roomName, h.producer)
 		go h.rooms[roomName].StartDeliveringMessages()
 	}
 
@@ -95,6 +95,10 @@ func(h *Handler) getOrCreateRoom(roomName string) *Room {
 func(h *Handler) disconnectUser(user *Client, room *Room) {
 	defer user.conn.Close()
 
+	if room.closed {
+		return
+	}
+
 	room.DeleteUser(user.user.Id)
 
 	if h.deleteRoomIfEmpty(room) {
@@ -102,7 +106,7 @@ func(h *Handler) disconnectUser(user *Client, room *Room) {
 		return
 	}
 
-	msg := Message{UserName: user.user.Name, UserId: user.user.Id, Message: fmt.Sprintf("user %s left the group", user.user.Name), RoomName: room.Name}
+	msg := NewMessage(user.user.Name, user.user.Id, fmt.Sprintf("user %s left the group", user.user.Name), room.Name) 
 
 	room.PushMessage(msg)
 }
@@ -146,7 +150,7 @@ func (h *Handler) handleInputMessage(user *Client, room *Room) error {
 		return err
 	}
 
-	message := Message{UserName: user.user.Name, UserId: user.user.Id, Message: string(msg), RoomName: room.Name}
+	message := NewMessage(user.user.Name, user.user.Id, string(msg), room.Name) 
 
 	room.PushMessage(message)
 
