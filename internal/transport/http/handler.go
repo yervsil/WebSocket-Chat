@@ -102,7 +102,7 @@ func(h *Handler) Sign_up() func(http.ResponseWriter, *http.Request){
 // @Success 200 {object} utils.Response "Access and refresh tokens"
 // @Failure 400 {object} utils.Response "Invaild request data"
 // @Failure 500 {object} utils.Response "Server error"
-// @Router /auth/sign-in [post]
+// @Router /sign-in [post]
 func(h *Handler) Sign_in() func(http.ResponseWriter, *http.Request){
 	validate := validator.New()
 
@@ -150,7 +150,7 @@ func(h *Handler) Sign_in() func(http.ResponseWriter, *http.Request){
 // @Success 200 {object} utils.Response "New token"
 // @Failure 400 {object} utils.Response "Invalid request data"
 // @Failure 500 {object} utils.Response "Server error"
-// @Router /auth/refresh_token [post]
+// @Router /refresh_token [post]
 func(h *Handler) Refresh_token() func(http.ResponseWriter, *http.Request){
 	validate := validator.New()
 

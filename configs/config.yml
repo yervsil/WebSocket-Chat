@@ -4,11 +4,12 @@ httpServer:
   writeTimeout: 10s
   readTimeout: 10s
 postgres:
-  host: localhost
+  host: db
   port: "5432"
   username: postgres
   dbname: postgres
   ssl_mode: disable
 kafka:
-  brokers: "127.0.0.1:9095,127.0.0.1:9096,127.0.0.1:9097"
+  #brokers: "127.0.0.1:9095,127.0.0.1:9096,127.0.0.1:9097"
+  brokers: "kafka-1:9092,kafka-2:9092,kafka-3:9092"
   topic: "testTopic"

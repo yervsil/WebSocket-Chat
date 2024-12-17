@@ -1,6 +1,25 @@
 version: '3'
 
 services:
+  db:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_DB: postgres
+      POSTGRES_PASSWORD: qwerty123
+    ports:
+      - 5432:5432
+
+  app:
+    build: .
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/usr/src/app
+    depends_on:
+      - db
+
   kafka-ui:
     image: provectuslabs/kafka-ui:latest
     ports:

@@ -9,7 +9,7 @@
     "host": "localhost:8000",
     "basePath": "/",
     "paths": {
-        "/auth/refresh_token": {
+        "/refresh_token": {
             "post": {
                 "description": "updates request tokens by refresh token",
                 "consumes": [
@@ -55,7 +55,7 @@
                 }
             }
         },
-        "/auth/sign-in": {
+        "/sign-in": {
             "post": {
                 "description": "Authentication of users by email and password, with token returning.",
                 "consumes": [

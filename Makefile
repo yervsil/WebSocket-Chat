@@ -12,15 +12,15 @@ create_migrations:
 
 .PHONY: migrate_up
 migrate_up:
-	migrate -path ./migrations -database "postgres://postgres:$(DB_PASSWORD)@localhost:5432/postgres?sslmode=disable" up
+	migrate -path ./migrations -database "postgres://postgres:qwerty123@localhost:5432/postgres?sslmode=disable" up
 
 .PHONY: migrate_down
 migrate_down:
-	migrate -path ./migrations -database "postgres://postgres:$(DB_PASSWORD)@localhost:5432/postgres?sslmode=disable" down
+	migrate -path ./migrations -database "postgres://postgres:qwerty123@localhost:5432/postgres?sslmode=disable" down
 
 .PHONY: swag
 swag:
-	swag init --parseDependency --parseInternal -g cmd/auth/main.go
+	swag init --parseDependency --parseInternal -g cmd/main.go
 
 .PHONY: mockGen
 mockGen:

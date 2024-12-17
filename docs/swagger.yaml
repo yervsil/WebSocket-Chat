@@ -41,7 +41,7 @@ info:
   title: Auth service API
   version: "1.0"
 paths:
-  /auth/refresh_token:
+  /refresh_token:
     post:
       consumes:
       - application/json
@@ -71,7 +71,7 @@ paths:
       summary: Token update
       tags:
       - Authentication
-  /auth/sign-in:
+  /sign-in:
     post:
       consumes:
       - application/json

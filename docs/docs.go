@@ -15,7 +15,7 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/auth/refresh_token": {
+        "/refresh_token": {
             "post": {
                 "description": "updates request tokens by refresh token",
                 "consumes": [
@@ -61,7 +61,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/auth/sign-in": {
+        "/sign-in": {
             "post": {
                 "description": "Authentication of users by email and password, with token returning.",
                 "consumes": [
